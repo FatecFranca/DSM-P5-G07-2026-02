@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'telas/login_page.dart';
 
 void main() {
   runApp(const StressScanApp());
@@ -89,16 +90,13 @@ class TelaBoasVindas extends StatelessWidget {
                       height: 54,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const TelaProvisoria(
-                                    titulo: 'Entrar',
-                                  ),
-                            ),
-                          );
-                        },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                  );
+                },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               const Color(0xFF6750A4),
@@ -158,7 +156,6 @@ class TelaBoasVindas extends StatelessWidget {
 }
 
 // Tela temporária para testar a navegação.
-// Vamos substituí-la pelas telas reais de login e cadastro.
 class TelaProvisoria extends StatelessWidget {
   final String titulo;
 
