@@ -1,31 +1,19 @@
-
 import 'package:flutter/material.dart';
+
 import 'questionario_page.dart';
+import 'historico_page.dart';
+import 'dashboard_page.dart';
+
 
 class HomePage extends StatelessWidget {
   final String token;
 
-  const HomePage({
-    super.key,
-    required this.token,
-  });
+  const HomePage({super.key, required this.token});
 
   static const Color roxo = Color(0xFF6750A4);
   static const Color roxoEscuro = Color(0xFF38265C);
   static const Color fundo = Color(0xFFF8F6FC);
 
-  void _emDesenvolvimento(
-    BuildContext context,
-    String funcionalidade,
-  ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '$funcionalidade estará disponível em breve!',
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +25,12 @@ class HomePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: const Text(
           'Stress Scan',
-          style: TextStyle(
-            color: roxoEscuro,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: roxoEscuro, fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
             tooltip: 'Sair',
-            icon: const Icon(
-              Icons.logout,
-              color: roxoEscuro,
-            ),
+            icon: const Icon(Icons.logout, color: roxoEscuro),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -61,9 +43,7 @@ class HomePage extends StatelessWidget {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(28),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 440,
-              ),
+              constraints: const BoxConstraints(maxWidth: 440),
               child: Column(
                 children: [
                   // Identidade visual
@@ -90,10 +70,7 @@ class HomePage extends StatelessWidget {
                   const Text(
                     'Como está seu bem-estar hoje?',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF5E5868),
-                    ),
+                    style: TextStyle(fontSize: 16, color: Color(0xFF5E5868)),
                   ),
 
                   const SizedBox(height: 25),
@@ -108,37 +85,41 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 30),
 
                   // Questionário
-                    _botaoMenu(
-                      context,
-                      icone: Icons.edit_note,
-                      titulo: 'Responder questionário',
-                      descricao:
-                          'Descubra sua classificação de estresse',
-                      aoClicar: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QuestionarioPage(
-                              token: token,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                  _botaoMenu(
+                    context,
+                    icone: Icons.edit_note,
+                    titulo: 'Responder questionário',
+                    descricao: 'Descubra sua classificação de estresse',
+                    aoClicar: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuestionarioPage(token: token),
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 14),
+
 
                   // Resultados
                   _botaoMenu(
                     context,
                     icone: Icons.insights,
                     titulo: 'Meus resultados',
-                    descricao:
-                        'Visualize sua avaliação de estresse',
-                    aoClicar: () => _emDesenvolvimento(
-                      context,
-                      'A tela de resultados',
-                    ),
+                    descricao: 'Acompanhe suas classificações de estresse',
+                    aoClicar: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DashboardPage(
+                            token: token,
+                          ),
+                        ),
+                      );
+                    },
                   ),
+
 
                   const SizedBox(height: 14),
 
@@ -147,12 +128,15 @@ class HomePage extends StatelessWidget {
                     context,
                     icone: Icons.history,
                     titulo: 'Meu histórico',
-                    descricao:
-                        'Consulte suas avaliações anteriores',
-                    aoClicar: () => _emDesenvolvimento(
-                      context,
-                      'O histórico',
-                    ),
+                    descricao: 'Consulte suas avaliações anteriores',
+                    aoClicar: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HistoricoPage(token: token),
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 30),
@@ -161,10 +145,7 @@ class HomePage extends StatelessWidget {
                     'Classificação experimental. '
                     'Não substitui avaliação profissional.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),
@@ -187,9 +168,7 @@ class HomePage extends StatelessWidget {
       child: Card(
         color: Colors.white,
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: aoClicar,
@@ -197,18 +176,13 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.all(18),
             child: Row(
               children: [
-                Icon(
-                  icone,
-                  color: roxo,
-                  size: 32,
-                ),
+                Icon(icone, color: roxo, size: 32),
 
                 const SizedBox(width: 16),
 
                 Expanded(
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         titulo,
@@ -232,10 +206,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
 
-                const Icon(
-                  Icons.chevron_right,
-                  color: roxo,
-                ),
+                const Icon(Icons.chevron_right, color: roxo),
               ],
             ),
           ),

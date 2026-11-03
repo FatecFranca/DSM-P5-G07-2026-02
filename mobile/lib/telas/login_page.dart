@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
+
 import '../services/auth_service.dart';
 import 'home_page.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,56 +32,50 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  
-Future<void> _entrar() async {
-  // Validar os campos do formulário
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
+  Future<void> _entrar() async {
+    // Validar os campos do formulário
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
-  setState(() {
-    _carregando = true;
-  });
+    setState(() {
+      _carregando = true;
+    });
 
-  try {
-    // Enviar e-mail e senha para a API Azure
-    final token = await _authService.fazerLogin(
-      email: _emailController.text,
-      senha: _senhaController.text,
-    );
+    try {
+      // Enviar e-mail e senha para a API Azure
+      final token = await _authService.fazerLogin(
+        email: _emailController.text,
+        senha: _senhaController.text,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-        // Login realizado: direcionar para a Home
-        if (token.isNotEmpty) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(token: token),
-            ),
-          );
-        }
-  } catch (erro) {
-    if (!mounted) return;
+      // Login realizado: direcionar para a Home
+      if (token.isNotEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(token: token)),
+        );
+      }
+    } catch (erro) {
+      if (!mounted) return;
 
-    // Exibir mensagem de erro
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          erro.toString().replaceFirst('Exception: ', ''),
+      // Exibir mensagem de erro
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(erro.toString().replaceFirst('Exception: ', '')),
+          backgroundColor: Colors.red,
         ),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } finally {
-    if (mounted) {
-      setState(() {
-        _carregando = false;
-      });
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _carregando = false;
+        });
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -98,23 +93,17 @@ Future<void> _entrar() async {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(28),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 420,
-              ),
+              constraints: const BoxConstraints(maxWidth: 420),
 
               child: Form(
                 key: _formKey,
 
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
 
                   children: [
                     // Logotipo
-                    Image.asset(
-                      'assets/images/logo.png',
-                      height: 105,
-                    ),
+                    Image.asset('assets/images/logo.png', height: 105),
 
                     const SizedBox(height: 35),
 
@@ -145,32 +134,24 @@ Future<void> _entrar() async {
                     // Campo e-mail
                     TextFormField(
                       controller: _emailController,
-                      keyboardType:
-                          TextInputType.emailAddress,
-                      autofillHints: const [
-                        AutofillHints.email,
-                      ],
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: const [AutofillHints.email],
 
                       decoration: InputDecoration(
                         labelText: 'E-mail',
-                        prefixIcon: const Icon(
-                          Icons.email_outlined,
-                        ),
+                        prefixIcon: const Icon(Icons.email_outlined),
                         border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
 
                       validator: (valor) {
-                        if (valor == null ||
-                            valor.trim().isEmpty) {
+                        if (valor == null || valor.trim().isEmpty) {
                           return 'Informe seu e-mail';
                         }
 
-                        if (!RegExp(
-                          r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                        ).hasMatch(valor.trim())) {
+                        if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
+                            .hasMatch(valor.trim())) {
                           return 'Informe um e-mail válido';
                         }
 
@@ -187,9 +168,7 @@ Future<void> _entrar() async {
 
                       decoration: InputDecoration(
                         labelText: 'Senha',
-                        prefixIcon: const Icon(
-                          Icons.lock_outline,
-                        ),
+                        prefixIcon: const Icon(Icons.lock_outline),
 
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -200,21 +179,18 @@ Future<void> _entrar() async {
 
                           onPressed: () {
                             setState(() {
-                              _mostrarSenha =
-                                  !_mostrarSenha;
+                              _mostrarSenha = !_mostrarSenha;
                             });
                           },
                         ),
 
                         border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
 
                       validator: (valor) {
-                        if (valor == null ||
-                            valor.isEmpty) {
+                        if (valor == null || valor.isEmpty) {
                           return 'Informe sua senha';
                         }
 
@@ -236,8 +212,7 @@ Future<void> _entrar() async {
                           foregroundColor: Colors.white,
 
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
 
@@ -276,10 +251,7 @@ Future<void> _entrar() async {
                     const Text(
                       'Seu bem-estar também faz parte da sua jornada acadêmica.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
