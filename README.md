@@ -1,151 +1,260 @@
-# 🧠 Stress Scan
+# Stress Scan
 
-**Aplicativo de classificação experimental dos níveis de estresse em estudantes universitários**
+**Aplicativo acadêmico de classificação experimental de níveis de estresse em estudantes universitários, com dashboard de resultados**
 
-## Sobre o projeto
+Projeto Integrador do curso de **Desenvolvimento de Software Multiplataforma (DSM)** da **FATEC Franca**.
 
-O **Stress Scan** é um aplicativo desenvolvido como Projeto Integrador do curso de Desenvolvimento de Software Multiplataforma da FATEC Franca.
+O **Stress Scan** combina um aplicativo desenvolvido em **Flutter**, uma **API REST em FastAPI** hospedada em uma **máquina virtual (VM) na Microsoft Azure**, um modelo de **Machine Learning** e o **MongoDB Atlas** para classificar respostas a um questionário, consultar avaliações anteriores e visualizar um painel com a evolução das classificações.
 
-A solução utiliza técnicas de **Machine Learning** para classificar o nível de estresse de estudantes universitários a partir das respostas a um questionário.
+> **Aviso:** o Stress Scan é um protótipo acadêmico. Suas classificações são experimentais, **não constituem diagnóstico clínico** e não substituem avaliação ou acompanhamento profissional.
 
-O projeto tem como motivação a atenção à saúde emocional no ambiente acadêmico, especialmente às experiências de estudantes pretos e pardos, considerando os desafios sociais e acadêmicos enfrentados por essa população.
+## Objetivo e contexto
 
-A classificação é experimental e não constitui diagnóstico psicológico ou médico.
+O projeto busca apoiar a reflexão sobre o estresse no ambiente universitário, com atenção especial à vivência de estudantes **pretos e pardos** e aos fatores sociais e acadêmicos que podem afetar seu bem-estar.
 
-## Objetivo
-
-Desenvolver uma aplicação que permita ao estudante:
-
-- Responder a um questionário sobre fatores relacionados ao estresse.
-- Receber uma classificação estimada do seu nível de estresse.
-- Consultar o histórico das avaliações realizadas.
-- Acompanhar seus resultados ao longo do tempo.
-
-O modelo utiliza três classes:
+O aplicativo permite que o estudante autenticado responda a um questionário de 17 perguntas, receba uma classificação experimental, consulte o histórico individual e acompanhe suas classificações em um dashboard. Os níveis previstos são:
 
 | Classe | Classificação |
-|---|---|
-| 0 | Estresse baixo |
-| 1 | Estresse moderado |
-| 2 | Estresse alto |
+| --- | --- |
+| `0` | Estresse baixo |
+| `1` | Estresse moderado |
+| `2` | Estresse alto |
 
-## Tecnologias utilizadas
-
-| Tecnologia | Finalidade |
-|---|---|
-| Flutter / Dart | Desenvolvimento do aplicativo |
-| Python | Processamento e Machine Learning |
-| Scikit-learn | Treinamento e execução do modelo |
-| Regressão Logística | Algoritmo de classificação |
-| FastAPI | Desenvolvimento da API REST |
-| MongoDB Atlas | Armazenamento dos usuários e avaliações |
-| JWT | Autenticação e proteção das rotas |
-| Argon2 | Proteção das senhas |
-| Joblib | Serialização do modelo treinado |
-| Swagger / OpenAPI | Documentação e testes da API |
-
-## Machine Learning
-
-O projeto utiliza o dataset **Student Stress Monitoring Datasets**, disponibilizado no Kaggle.
-
-Dataset: https://www.kaggle.com/datasets/mdsultanulislamovi/student-stress-monitoring-datasets
-
-O conjunto possui **1.100 registros**, com informações relacionadas a fatores psicológicos, fisiológicos, ambientais, acadêmicos e sociais.
-
-Após a análise e seleção de atributos, foram utilizadas **17 variáveis preditoras**.
-
-O algoritmo selecionado foi a **Regressão Logística**, considerando seu desempenho e interpretabilidade.
-
-### Resultados experimentais do modelo
-
-| Métrica | Resultado |
-|---|---|
-| Acurácia no conjunto de teste | 90,45% |
-| Validação cruzada (10 folds) | 87,50% |
-| Recall da classe de estresse alto | 94,59% |
-
-Essas métricas correspondem à avaliação do modelo no dataset utilizado. A conversão das respostas qualitativas do aplicativo para os valores numéricos esperados pelo modelo ainda não foi validada com usuários reais.
-
-O dataset também não permite avaliar especificamente o desempenho do modelo por grupo étnico-racial.
+**Limitação metodológica:** o dataset utilizado não disponibiliza uma variável de raça/cor que permita avaliar o desempenho especificamente em estudantes pretos e pardos. Portanto, o projeto **não reivindica que seu modelo tenha sido validado para esse grupo**.
 
 ## Arquitetura
 
-O sistema está organizado em duas partes principais:
+```mermaid
+flowchart TD
+    U[Estudante] --> F[Flutter - Windows / Android / Web]
+    F -->|HTTPS e token JWT| N[Nginx - VM Azure]
+    N --> A[FastAPI - Python]
+    A --> M[Modelo de Regressão Logística]
+    A <-->|Usuários e avaliações| D[(MongoDB Atlas)]
+    A -->|Resultado em JSON| F
+```
 
-**Aplicativo Flutter:** responsável pela interface, autenticação, questionário e visualização das avaliações.
+- **Flutter:** tela de boas-vindas, login, Home, questionário, tela de classificação, histórico individual e dashboard com gráfico.
+- **FastAPI:** cadastro, autenticação JWT, verificação das credenciais, inferência e registro das avaliações.
+- **Machine Learning:** modelo de Regressão Logística serializado em arquivo `.joblib`.
+- **MongoDB Atlas:** armazenamento dos usuários e das avaliações associadas à identidade autenticada.
+- **Azure VM:** hospedagem pública da API; o repositório inclui arquivos de configuração para Nginx, serviço `systemd` e implantação.
+- **GitHub Actions:** validação automatizada da API e publicação **condicional** na VM Azure.
 
-**API FastAPI:** responsável pelo cadastro, login, validação dos tokens JWT, execução do modelo de Machine Learning e comunicação com o MongoDB Atlas.
+A versão Flutter é executada localmente durante o desenvolvimento e pode ser apresentada como aplicativo **Windows Desktop**. Não é necessário hospedar o Flutter na VM para que ele consuma a API.
 
-Fluxo previsto:
+## Tecnologias
 
-**Flutter → FastAPI → Modelo de Machine Learning → MongoDB Atlas → Flutter**
+| Camada | Tecnologias |
+| --- | --- |
+| Interface | Flutter, Dart, Material Design, `fl_chart` (gráfico de colunas) |
+| Comunicação | HTTPS, pacote `http` do Dart |
+| Backend | Python, FastAPI, Uvicorn, Pydantic, Pandas |
+| Machine Learning | Scikit-learn, Regressão Logística, Joblib |
+| Banco de dados | MongoDB Atlas, PyMongo |
+| Autenticação | JWT (PyJWT) e hash de senhas Argon2 |
+| Infraestrutura | Microsoft Azure VM, Linux, Nginx, `systemd`, SSH |
+| Automação | GitHub Actions, script de deploy em shell |
 
-## Estrutura do projeto
+## Machine Learning
+
+O modelo foi treinado com o dataset [Student Stress Monitoring Datasets (Kaggle)](https://www.kaggle.com/datasets/mdsultanulislamovi/student-stress-monitoring-datasets), que contém **1.100 observações**.
+
+Após análise e seleção, a aplicação utiliza **17 atributos**, distribuídos em cinco grupos:
+
+| Grupo | Atributos usados no questionário |
+| --- | --- |
+| Psicológicos | `anxiety_level`, `depression`, `self_esteem` |
+| Fisiológicos | `headache`, `sleep_quality` |
+| Ambientais | `noise_level`, `living_conditions`, `safety`, `basic_needs` |
+| Acadêmicos | `academic_performance`, `study_load`, `teacher_student_relationship`, `future_career_concerns` |
+| Sociais | `social_support`, `peer_pressure`, `extracurricular_activities`, `bullying` |
+
+O modelo adotado foi a **Regressão Logística**, com as seguintes métricas obtidas nos testes com o dataset:
+
+| Métrica | Resultado |
+| --- | --- |
+| Acurácia no conjunto de teste | **90,45%** |
+| Acurácia média em validação cruzada de 10 folds | **87,50%** |
+| Recall da classe de estresse alto (2) | **94,59%** |
+
+As alternativas qualitativas do aplicativo são convertidas em valores numéricos para uso pelo modelo. **Essa correspondência é uma adaptação experimental, ainda não validada com usuários reais.** Assim, as métricas acima não representam necessariamente o desempenho do questionário em uso real.
+
+## Estrutura do repositório
 
 ```text
 stress_scan/
+├── .github/
+│   └── workflows/
+│       └── api.yml               # CI e CD condicional da API
 ├── api/
-│   ├── main.py
-│   ├── database.py
-│   ├── setup_db.py
-│   ├── cadastro.py
-│   ├── login.py
-│   ├── auth.py
-│   ├── historico.py
-│   ├── modelo_estresse_LR.joblib
-│   ├── requirements.txt
-│   └── .env
-│
+│   ├── main.py                   # Endpoints e inferência
+│   ├── cadastro.py               # Cadastro
+│   ├── login.py                  # Login e geração de JWT
+│   ├── auth.py                   # Validação de JWT e /me
+│   ├── historico.py              # Consulta de avaliações
+│   ├── database.py               # Conexão MongoDB Atlas
+│   ├── setup_db.py               # Índices e configuração inicial
+│   ├── modelo_estresse_LR.joblib  # Modelo treinado
+│   └── requirements.txt
+├── infra/
+│   ├── README.md                 # Guia específico de infraestrutura
+│   ├── deploy.sh                 # Script de implantação
+│   ├── stress-scan.nginx.conf    # Configuração do proxy Nginx
+│   └── stress-scan.service       # Definição de serviço systemd
 └── mobile/
-    ├── assets/
-    │   └── images/
-    │       ├── logo.png
-    │       ├── bemvindo.png
-    │       ├── questionario.png
-    │       └── resultado.png
+    ├── assets/images/
+    │   ├── logo.png
+    │   ├── bemvindo.png
+    │   ├── questionario.png
+    │   └── resultado.png
     ├── lib/
+    │   ├── config/api_config.dart
+    │   ├── services/
+    │   │   ├── auth_service.dart
+    │   │   ├── previsao_service.dart
+    │   │   └── historico_service.dart
+    │   ├── telas/
+    │   │   ├── login_page.dart
+    │   │   ├── home_page.dart
+    │   │   ├── questionario_page.dart
+    │   │   ├── resultado_page.dart
+    │   │   ├── historico_page.dart
+    │   │   └── dashboard_page.dart
     │   └── main.dart
     └── pubspec.yaml
 ```
 
-O arquivo `.env` contém configurações sensíveis e não deve ser enviado ao repositório Git.
+> A listagem destaca arquivos relevantes. Pastas geradas pelo Flutter, arquivos de configuração locais e outros arquivos auxiliares foram omitidos.
 
-## Autenticação e banco de dados
+## API hospedada na Azure
 
-A API utiliza autenticação com tokens JWT e armazenamento seguro das senhas por meio do Argon2.
+**Endereço-base:** `https://stressscan.southafricanorth.cloudapp.azure.com`
 
-O MongoDB Atlas possui duas coleções principais:
+**Documentação interativa (Swagger):** https://stressscan.southafricanorth.cloudapp.azure.com/docs
 
-- **usuarios:** registros de identificação e credenciais protegidas.
-- **avaliacoes:** resultados das classificações, associados ao usuário autenticado.
+A aplicação Flutter utiliza esse endereço em `mobile/lib/config/api_config.dart` e envia requisições autenticadas em HTTPS.
 
-Cada avaliação armazena o identificador do estudante, o nível de estresse classificado e a data de realização.
+| Método | Rota | Função | Token JWT |
+| --- | --- | --- | --- |
+| `GET` | `/` | Verificação básica da aplicação | Não |
+| `GET` | `/modelo` | Informações do modelo | Não |
+| `POST` | `/cadastro` | Criação de conta | Não |
+| `POST` | `/login` | Autenticação e emissão de token | Não |
+| `GET` | `/me` | Identificação do usuário autenticado | Sim |
+| `POST` | `/prever` | Classificação e registro da avaliação | Sim |
+| `GET` | `/historico` | Histórico individual do estudante | Sim |
 
-As 17 respostas individuais do questionário não são armazenadas na implementação atual.
+O endpoint `/prever` recebe as 17 respostas numéricas e retorna, entre outros campos, `avaliacao_id`, `nivel_estresse` e `classificacao`. O endpoint `/historico` retorna até **50 avaliações mais recentes** do estudante autenticado, em ordem decrescente de data. O filtro usa o identificador obtido do JWT, não um identificador informado pelo cliente na URL.
 
-## Endpoints da API
+As senhas são armazenadas com **hash Argon2**. O JWT é emitido no login; na implementação atual do Flutter, ele é mantido **em memória enquanto o aplicativo está em execução**, sem persistência de sessão entre reinicializações.
 
-| Método | Endpoint | Funcionalidade |
-|---|---|---|
-| GET | `/` | Verificação básica da API |
-| GET | `/modelo` | Informações do modelo |
-| POST | `/cadastro` | Cadastro de usuários |
-| POST | `/login` | Autenticação e geração de JWT |
-| GET | `/me` | Identificação do usuário autenticado |
-| POST | `/prever` | Classificação e registro da avaliação |
-| GET | `/historico` | Consulta ao histórico individual |
+## Funcionalidades do aplicativo Flutter
 
-As rotas `/me`, `/prever` e `/historico` exigem autenticação.
+O aplicativo é desenvolvido para execução local, com testes no **Windows Desktop** e comunicação com a API publicada na Azure.
 
-A documentação interativa está disponível em:
+| Tela | Função | Situação |
+| --- | --- | --- |
+| Boas-vindas | Identidade visual e opções de acesso | Implementada e testada |
+| Login | Autenticação por e-mail e senha, com JWT | Implementada e testada com a Azure |
+| Home | Navegação para questionário, resultados e histórico | Implementada e testada |
+| Questionário | 17 perguntas distribuídas em cinco categorias | Implementada e testada |
+| Resultado | Exibe a classificação produzida pela API após o envio | Implementada e testada |
+| Meu histórico | Lista avaliações anteriores com data, hora e nível de estresse | Implementada e testada com a Azure |
+| Meus resultados | Dashboard com resumo e gráfico das últimas avaliações | Implementado e conectado; validação visual final pendente |
+| Criar conta | Formulário de cadastro integrado ao `POST /cadastro` | Pendente no Flutter; endpoint já existe na API |
 
-`http://127.0.0.1:8000/docs`
+### Dashboard — Meus resultados
 
-## Como executar
+O painel utiliza o pacote **`fl_chart`** e reaproveita o `HistoricoService`, que consulta `GET /historico` com o JWT do usuário. O dashboard foi implementado para mostrar:
 
-### Backend — FastAPI
+- **Última avaliação:** classificação mais recente do estudante.
+- **Avaliações exibidas:** quantidade de registros retornados na consulta (até 50 na API atual), não necessariamente o total histórico de toda a vida da conta.
+- **Gráfico de colunas:** até as **10 avaliações mais recentes**, apresentadas da mais antiga para a mais recente e diferenciadas por cor: baixo (verde), moderado (laranja) e alto (vermelho).
+- **Atualização dos dados:** comando para consultar novamente a API; além de mensagens para histórico vazio ou falhas de conexão.
 
-Na pasta `api`, configure um ambiente virtual Python e instale as dependências:
+**Interpretação correta:** o modelo retorna classes discretas (`0`, `1`, `2`), não uma escala contínua ou uma pontuação clínica. Para tornar a classe zero visível, as barras usam alturas gráficas `1`, `2` e `3` para baixo, moderado e alto, respectivamente. Esse deslocamento é **apenas visual**, sem alterar as classificações armazenadas. A sequência representa categorias sucessivas; não deve ser interpretada como medida clínica de piora ou melhora.
+
+A tela **Meu histórico** complementa o dashboard com os registros individuais e suas datas; a tela **Resultado** exibe o retorno de uma avaliação recém-concluída.
+
+## Infraestrutura Azure e CI/CD
+
+O projeto possui uma VM na **Microsoft Azure** para executar a API. Os arquivos de infraestrutura adicionados ao repositório estão na pasta [`infra/`](infra/README.md):
+
+- [`deploy.sh`](infra/deploy.sh): script de implantação disponibilizado pela equipe.
+- [`stress-scan.nginx.conf`](infra/stress-scan.nginx.conf): configuração do Nginx.
+- [`stress-scan.service`](infra/stress-scan.service): definição do serviço da aplicação no Linux.
+
+As orientações operacionais específicas para configurar ou manter a VM devem seguir o arquivo [`infra/README.md`](infra/README.md). Os detalhes internos desses scripts não são reproduzidos aqui.
+
+### CI — validação automática
+
+O workflow [`.github/workflows/api.yml`](.github/workflows/api.yml), denominado **Validar API**, é acionado por:
+
+- Pull requests que alteram `api/**`, `infra/**` ou o próprio workflow;
+- Pushes na branch `main` que alteram esses mesmos caminhos;
+- Execução manual (`workflow_dispatch`).
+
+O job `validar` utiliza **Ubuntu 24.04** e **Python 3.12** para instalar dependências, executar `pip check`, compilar os arquivos Python e fazer verificações programáticas do carregamento da API, da correspondência entre campos do questionário e atributos do modelo e da execução de uma inferência.
+
+**Atenção:** essas verificações não equivalem a uma suíte completa de testes funcionais, de segurança ou de integração com o banco de dados.
+
+### CD — publicação condicional na VM Azure
+
+O job `publicar` depende do sucesso do job `validar` e só pode executar quando:
+
+1. a execução ocorre na branch `main`;
+2. o evento não é um pull request;
+3. a variável de repositório `ENABLE_AZURE_DEPLOY` possui o valor `true`.
+
+A publicação utiliza conexão **SSH** com informações configuradas em GitHub Actions:
+
+| Tipo | Nome | Finalidade |
+| --- | --- | --- |
+| Secret | `AZURE_SSH_PRIVATE_KEY` | Autenticação SSH |
+| Secret | `AZURE_SSH_KNOWN_HOSTS` | Verificação da identidade do servidor |
+| Variable | `AZURE_HOST` | Endereço da VM |
+| Variable | `ENABLE_AZURE_DEPLOY` | Habilita ou desabilita o deploy automático |
+
+O workflow envia à VM o identificador do commit (`github.sha`) e, após a etapa remota, executa uma verificação HTTP do endereço público da aplicação.
+
+**Importante:** apenas fazer `git push` **não garante** a publicação na Azure: os filtros de arquivos, as condições do job, as credenciais, a conectividade e o resultado da execução precisam estar corretos. O status pode ser acompanhado na aba **Actions** do GitHub.
+
+**O workflow atual não faz CI/CD do Flutter:** alterações exclusivas na pasta `mobile/` não acionam automaticamente o workflow da API.
+
+## Como executar o aplicativo Flutter
+
+Pré-requisitos: Flutter SDK configurado e ambiente de compilação disponível para a plataforma escolhida.
+
+No terminal:
+
+```powershell
+cd mobile
+flutter pub get
+flutter run -d windows
+```
+
+Para testar no navegador:
+
+```powershell
+flutter run -d chrome
+```
+
+No Windows Desktop, a aplicação abre em uma janela independente. Como a API está disponível na Azure, **não é necessário iniciar a FastAPI no computador** para utilizar o aplicativo. É necessária conexão de rede com a API e o MongoDB Atlas deve estar acessível ao backend.
+
+> Ao executar o Flutter Web no navegador, pode ser necessária configuração de **CORS** no backend para autorizar a origem da aplicação.
+
+Para gerar uma versão de distribuição no Windows:
+
+```powershell
+flutter build windows --release
+```
+
+A distribuição deve incluir os arquivos de suporte gerados junto ao executável, não apenas o `.exe` isolado.
+
+## Como executar a API localmente (desenvolvimento)
+
+Na pasta `api`, crie um ambiente virtual e instale as dependências:
 
 ```powershell
 cd api
@@ -153,72 +262,52 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Configure o arquivo `.env` com suas próprias credenciais:
+Configure localmente um arquivo `api/.env` com seus próprios valores:
 
 ```dotenv
-MONGODB_URI=STRING_DE_CONEXAO
+MONGODB_URI=mongodb+srv://USUARIO:SENHA@HOST/...
 MONGODB_DATABASE=stress_scan
-JWT_SECRET_KEY=CHAVE_SECRETA_SEGURA
+JWT_SECRET_KEY=CHAVE_SECRETA_ALEATORIA_E_FORTE
 ```
 
-As configurações do banco devem estar prontas antes de iniciar a API.
-
-Execute:
+Em seguida:
 
 ```powershell
 .\.venv\Scripts\python.exe -m uvicorn main:app --reload
 ```
 
-### Aplicativo — Flutter
+Swagger local: http://127.0.0.1:8000/docs
 
-Em outro terminal:
+**Segurança:** não envie arquivos `.env`, credenciais do Atlas, tokens JWT ou chaves SSH para o GitHub. Utilize variáveis de ambiente e GitHub Actions Secrets/Variables conforme necessário.
 
-```powershell
-cd mobile
-flutter pub get
-flutter run -d chrome
-```
+## Estado atual do desenvolvimento
 
-O projeto poderá ser executado no Chrome para testes iniciais.
+| Funcionalidade | Situação |
+| --- | --- |
+| Modelo de Regressão Logística treinado e integrado | Implementado |
+| API FastAPI e documentação Swagger | Implementado |
+| Cadastro de usuários via API | Implementado |
+| Login e validação JWT via API | Implementado |
+| Armazenamento e histórico individual no MongoDB Atlas | Implementado no backend |
+| API hospedada em VM Azure | Acessível por HTTPS nos testes realizados |
+| Workflow de CI e CD condicional | Configurado no repositório; execução de deploy depende das condições |
+| Flutter Windows Desktop e tela de boas-vindas | Implementado e testado |
+| Interface de login Flutter integrada à Azure | Implementado e testado |
+| Home do estudante autenticado | Implementado e testado |
+| Questionário Flutter com 17 perguntas | Implementado e testado |
+| Envio do questionário e classificação via Azure | Implementado e testado |
+| Tela personalizada do resultado | Implementada e testada após a classificação |
+| Serviço e tela Flutter de histórico individual | Implementados e testados com a Azure |
+| Dashboard com gráfico `fl_chart` | Implementado e conectado à Home; validação visual final pendente |
+| Tela Flutter de cadastro | Pendente |
+| Persistência segura de sessão e logout completo | Pendente |
+| Validação das respostas qualitativas com usuários reais | Pendente |
 
-## Funcionalidades implementadas
 
-- Cadastro de usuários com validação de e-mail.
-- Login com geração de token JWT.
-- Validação de autenticação em rotas protegidas.
-- Integração com MongoDB Atlas.
-- Classificação experimental com Regressão Logística.
-- Registro das avaliações no banco de dados.
-- Consulta ao histórico individual.
-- Estrutura inicial do projeto Flutter.
-- Tela de boas-vindas com identidade visual personalizada.
-- Navegação inicial para telas provisórias de login e cadastro.
+## Responsabilidade e privacidade
 
-## Próximas etapas
+O uso de perguntas relacionadas a ansiedade, tristeza, autoestima e outras experiências pessoais exige cuidado com privacidade. A API atual registra o **resultado, a data e o vínculo com o usuário**, sem armazenar o conteúdo das 17 respostas individuais. O acesso ao histórico é protegido por JWT e filtrado por usuário autenticado.
 
-- Desenvolver as telas de cadastro e login no Flutter.
-- Integrar o aplicativo à API.
-- Implementar o questionário com as 17 perguntas.
-- Desenvolver a tela de resultado.
-- Implementar a visualização do histórico.
-- Realizar testes de integração e segurança.
-- Configurar a hospedagem da API na Azure.
-- Avaliar a qualidade e as limitações das classificações com entradas do questionário real.
+---
 
-## Limitações
-
-O Stress Scan é uma ferramenta acadêmica e experimental de classificação.
-
-Seus resultados não substituem acompanhamento psicológico, avaliação médica ou instrumentos clínicos validados.
-
-O modelo foi treinado com dados públicos e ainda não passou por validação específica com a população-alvo do aplicativo.
-
-## Informações acadêmicas
-
-**Instituição:** FATEC Franca
-
-**Curso:** Desenvolvimento de Software Multiplataforma
-
-**Projeto:** Stress Scan — Projeto Integrador
-
-**Área:** Desenvolvimento Mobile, Inteligência Artificial e Machine Learning
+**FATEC Franca — Desenvolvimento de Software Multiplataforma — Projeto Integrador**
