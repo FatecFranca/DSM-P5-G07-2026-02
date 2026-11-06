@@ -15,6 +15,32 @@ class HomePage extends StatelessWidget {
   static const Color fundo = Color(0xFFF8F6FC);
 
 
+  // Pede confirmação e encerra a sessão: o token vive apenas neste widget,
+  // então ao voltar para a tela inicial ele é descartado.
+  Future<void> _confirmarSaida(BuildContext context) async {
+    final sair = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Sair da conta?'),
+        content: const Text('Você precisará fazer login novamente.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Sair'),
+          ),
+        ],
+      ),
+    );
+
+    if (sair == true && context.mounted) {
+      Navigator.of(context).popUntil((rota) => rota.isFirst);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,9 +57,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             tooltip: 'Sair',
             icon: const Icon(Icons.logout, color: roxoEscuro),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: () => _confirmarSaida(context),
           ),
         ],
       ),
