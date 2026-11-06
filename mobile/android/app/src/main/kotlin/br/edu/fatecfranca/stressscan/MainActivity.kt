@@ -1,4 +1,4 @@
-package com.example.stress_scan
+package br.edu.fatecfranca.stressscan
 
 import io.flutter.embedding.android.FlutterActivity
 
