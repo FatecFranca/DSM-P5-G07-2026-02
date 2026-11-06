@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'resultado_page.dart';
 import '../services/previsao_service.dart';
+import '../services/sessao_expirada_exception.dart';
+import '../utils/sessao.dart';
 
 // Estrutura de cada pergunta
 class PerguntaStress {
@@ -298,6 +300,11 @@ class _QuestionarioPageState extends State<QuestionarioPage> {
 
     } catch (erro) {
       if (!mounted) return;
+
+      if (erro is SessaoExpiradaException) {
+        encerrarSessaoExpirada(context);
+        return;
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

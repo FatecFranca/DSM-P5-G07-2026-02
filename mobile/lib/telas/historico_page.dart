@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/historico_service.dart';
+import '../utils/sessao.dart';
 
 class HistoricoPage extends StatefulWidget {
   final String token;
@@ -214,6 +215,10 @@ class _HistoricoPageState extends State<HistoricoPage> {
                         }
 
                         if (snapshot.hasError) {
+                          if (tratarSessaoExpirada(context, snapshot.error)) {
+                            return const SizedBox.shrink();
+                          }
+
                           return Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,

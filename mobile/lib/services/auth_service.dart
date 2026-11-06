@@ -1,16 +1,21 @@
 
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../config/api_config.dart';
 
 class AuthService {
+  final http.Client _client;
+
+  AuthService({http.Client? client}) : _client = client ?? http.Client();
+
   Future<String> fazerLogin({
     required String email,
     required String senha,
   }) async {
     try {
-      final resposta = await http.post(
+      final resposta = await _client.post(
         Uri.parse('${ApiConfig.baseUrl}/login'),
         headers: {
           'Content-Type': 'application/json',
@@ -45,8 +50,12 @@ class AuthService {
         'Não foi possível realizar o login. '
         'Código: ${resposta.statusCode}',
       );
-    } catch (erro) {
-      rethrow;
+    } on TimeoutException {
+      throw Exception('O servidor demorou para responder. Tente novamente.');
+    } on http.ClientException {
+      throw Exception(
+        'Não foi possível conectar ao servidor. Verifique sua conexão.',
+      );
     }
   }
 }

@@ -4,6 +4,10 @@ import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 
 class CadastroService {
+  final http.Client _client;
+
+  CadastroService({http.Client? client}) : _client = client ?? http.Client();
+
   Future<void> cadastrar({
     required String email,
     required String senha,
@@ -11,7 +15,7 @@ class CadastroService {
     final http.Response resposta;
 
     try {
-      resposta = await http
+      resposta = await _client
           .post(
             Uri.parse('${ApiConfig.baseUrl}/cadastro'),
             headers: {'Content-Type': 'application/json'},

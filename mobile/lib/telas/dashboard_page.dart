@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 import '../services/historico_service.dart';
+import '../utils/sessao.dart';
 
 class DashboardPage extends StatefulWidget {
   final String token;
@@ -434,6 +435,10 @@ class _DashboardPageState extends State<DashboardPage> {
             }
 
             if (snapshot.hasError) {
+              if (tratarSessaoExpirada(context, snapshot.error)) {
+                return const SizedBox.shrink();
+              }
+
               return Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
