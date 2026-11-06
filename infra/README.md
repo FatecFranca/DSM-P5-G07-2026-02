@@ -47,6 +47,13 @@ Testar renovação do certificado:
 
     sudo certbot renew --dry-run
 
+## Concluído
+
+- Integração contínua da API (validação, testes automatizados com pytest) e
+  do Flutter (análise estática e testes).
+- Publicação contínua na VM a partir da main.
+- Aplicativo Flutter integrado à API por HTTPS.
+
 ## Verificações realizadas
 
 Cadastro, login, autenticação, classificação com dados fictícios e
@@ -57,9 +64,10 @@ Esses testes verificam a integração técnica, não a qualidade do modelo.
 
 ## Pendências
 
-- Configurar integração e publicação contínuas.
 - Definir e implementar a estratégia de escala automática.
-- Integrar o aplicativo Flutter à API.
+- Implementar rollback automático do deploy.
+- Limitar a taxa de requisições em /login e /cadastro (Nginx).
+- Configurar monitoramento e alertas.
 
 ## Publicação automática
 
