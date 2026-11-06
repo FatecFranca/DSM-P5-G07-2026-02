@@ -57,6 +57,12 @@ jobs:
           print("API carregada e modelo executado com sucesso.")
           PY
 
+      - name: Executar testes automatizados
+        working-directory: api
+        run: |
+          ../.venv-ci/bin/python -m pip install -r requirements-dev.txt
+          ../.venv-ci/bin/python -m pytest tests -q
+
   publicar:
     needs: validar
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.ENABLE_AZURE_DEPLOY == 'true'
