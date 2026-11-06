@@ -7,6 +7,7 @@ from historico import router as historico_router
 from login import router as login_router
 from cadastro import router as cadastro_router
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, ConfigDict
 from pathlib import Path
 import joblib
@@ -18,6 +19,16 @@ app = FastAPI(
     title="Stress Scan API",
     description="API para classificação dos níveis de estresse de estudantes universitários",
     version="1.0.0"
+)
+
+# CORS: libera apenas o Flutter Web em desenvolvimento (localhost, qualquer porta).
+# A autenticação usa o header Authorization (JWT), sem cookies.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"^http://(localhost|127\.0\.0\.1)(:\d+)?$",
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 app.include_router(cadastro_router)
