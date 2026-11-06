@@ -149,7 +149,7 @@ A aplicação Flutter utiliza esse endereço em `mobile/lib/config/api_config.da
 
 O endpoint `/prever` recebe as 17 respostas numéricas e retorna, entre outros campos, `avaliacao_id`, `nivel_estresse` e `classificacao`. O endpoint `/historico` retorna até **50 avaliações mais recentes** do estudante autenticado, em ordem decrescente de data. O filtro usa o identificador obtido do JWT, não um identificador informado pelo cliente na URL.
 
-As senhas são armazenadas com **hash Argon2**. O JWT é emitido no login; na implementação atual do Flutter, ele é mantido **em memória enquanto o aplicativo está em execução** e descartado ao sair da conta, sem persistência de sessão entre reinicializações.
+As senhas são armazenadas com **hash Argon2**. O JWT é emitido no login; na implementação atual do Flutter, ele é mantido **em memória enquanto o aplicativo está em execução** e descartado ao sair da conta ou quando a API responde 401 (token expirado ou inválido), caso em que o app volta para a tela inicial. Não há persistência de sessão entre reinicializações.
 
 ## Funcionalidades do aplicativo Flutter
 
@@ -236,6 +236,12 @@ flutter pub get
 flutter run -d windows
 ```
 
+Para executar os testes automatizados dos serviços:
+
+```powershell
+flutter test
+```
+
 Para testar no navegador:
 
 ```powershell
@@ -303,6 +309,9 @@ Swagger local: http://127.0.0.1:8000/docs
 | Dashboard com gráfico `fl_chart` | Implementado e testado com a Azure |
 | Tela Flutter de cadastro | Implementada e testada com a Azure |
 | Logout com confirmação (descarta o token em memória) | Implementado e testado |
+| Tratamento de expiração do JWT (volta ao login ao receber 401) | Implementado |
+| Testes automatizados dos serviços Flutter (erros HTTP, rede, timeout, 401) | 22 testes (`flutter test`) |
+| Verificações de autenticação na API de produção (sem token, token forjado, `alg=none`, CORS externo) | Executadas manualmente; resultado esperado (401/400) |
 | Persistência segura de sessão entre reinicializações | Pendente |
 | Validação das respostas qualitativas com usuários reais | Pendente |
 
