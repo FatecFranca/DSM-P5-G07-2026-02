@@ -112,9 +112,11 @@ stress_scan/
     │   ├── config/api_config.dart
     │   ├── services/
     │   │   ├── auth_service.dart
+    │   │   ├── cadastro_service.dart
     │   │   ├── previsao_service.dart
     │   │   └── historico_service.dart
     │   ├── telas/
+    │   │   ├── cadastro_page.dart
     │   │   ├── login_page.dart
     │   │   ├── home_page.dart
     │   │   ├── questionario_page.dart
@@ -147,7 +149,7 @@ A aplicação Flutter utiliza esse endereço em `mobile/lib/config/api_config.da
 
 O endpoint `/prever` recebe as 17 respostas numéricas e retorna, entre outros campos, `avaliacao_id`, `nivel_estresse` e `classificacao`. O endpoint `/historico` retorna até **50 avaliações mais recentes** do estudante autenticado, em ordem decrescente de data. O filtro usa o identificador obtido do JWT, não um identificador informado pelo cliente na URL.
 
-As senhas são armazenadas com **hash Argon2**. O JWT é emitido no login; na implementação atual do Flutter, ele é mantido **em memória enquanto o aplicativo está em execução**, sem persistência de sessão entre reinicializações.
+As senhas são armazenadas com **hash Argon2**. O JWT é emitido no login; na implementação atual do Flutter, ele é mantido **em memória enquanto o aplicativo está em execução** e descartado ao sair da conta, sem persistência de sessão entre reinicializações.
 
 ## Funcionalidades do aplicativo Flutter
 
@@ -162,7 +164,7 @@ O aplicativo é desenvolvido para execução local, com testes no **Windows Desk
 | Resultado | Exibe a classificação produzida pela API após o envio | Implementada e testada |
 | Meu histórico | Lista avaliações anteriores com data, hora e nível de estresse | Implementada e testada com a Azure |
 | Meus resultados | Dashboard com resumo e gráfico das últimas avaliações | Implementado e conectado; validação visual final pendente |
-| Criar conta | Formulário de cadastro integrado ao `POST /cadastro` | Pendente no Flutter; endpoint já existe na API |
+| Criar conta | Formulário de cadastro (e-mail, senha e confirmação) integrado ao `POST /cadastro` | Implementada; teste final com a Azure pendente |
 
 ### Dashboard — Meus resultados
 
@@ -242,7 +244,7 @@ flutter run -d chrome
 
 No Windows Desktop, a aplicação abre em uma janela independente. Como a API está disponível na Azure, **não é necessário iniciar a FastAPI no computador** para utilizar o aplicativo. É necessária conexão de rede com a API e o MongoDB Atlas deve estar acessível ao backend.
 
-> Ao executar o Flutter Web no navegador, pode ser necessária configuração de **CORS** no backend para autorizar a origem da aplicação.
+> A API habilita **CORS** apenas para origens `localhost` e `127.0.0.1` (qualquer porta), o que permite testar o Flutter Web em desenvolvimento. Para hospedar a versão web em um domínio próprio, essa origem precisa ser adicionada em `api/main.py`.
 
 Para gerar uma versão de distribuição no Windows:
 
@@ -299,8 +301,9 @@ Swagger local: http://127.0.0.1:8000/docs
 | Tela personalizada do resultado | Implementada e testada após a classificação |
 | Serviço e tela Flutter de histórico individual | Implementados e testados com a Azure |
 | Dashboard com gráfico `fl_chart` | Implementado e conectado à Home; validação visual final pendente |
-| Tela Flutter de cadastro | Pendente |
-| Persistência segura de sessão e logout completo | Pendente |
+| Tela Flutter de cadastro | Implementada; teste final com a Azure pendente |
+| Logout com confirmação (descarta o token em memória) | Implementado |
+| Persistência segura de sessão entre reinicializações | Pendente |
 | Validação das respostas qualitativas com usuários reais | Pendente |
 
 

@@ -4,7 +4,7 @@
 
 Projeto Integrador do curso de **Desenvolvimento de Software Multiplataforma (DSM)** da **FATEC Franca**.
 
-O **Stress Scan** combina um aplicativo desenvolvido em **Flutter**, uma **API REST em FastAPI** hospedada em uma **máquina virtual (VM) na Microsoft Azure**, um modelo de **Machine Learning** e o **MongoDB Atlas** para classificar respostas a um questionário e consultar avaliações anteriores.
+O **Stress Scan** combina um aplicativo desenvolvido em **Flutter**, uma **API REST em FastAPI** hospedada em uma **máquina virtual (VM) na Microsoft Azure**, um modelo de **Machine Learning** e o **MongoDB Atlas** para classificar respostas a um questionário, consultar avaliações anteriores e visualizar um dashboard.
 
 > **Aviso:** o Stress Scan é um protótipo acadêmico. Suas classificações são experimentais, **não constituem diagnóstico clínico** e não substituem avaliação ou acompanhamento profissional.
 
@@ -34,7 +34,7 @@ flowchart TD
     A -->|Resultado em JSON| F
 ```
 
-- **Flutter:** interface, login, questionário, visualização dos resultados e, futuramente, histórico visual.
+- **Flutter:** interface, login, questionário, cadastro, histórico individual e dashboard de resultados.
 - **FastAPI:** cadastro, autenticação JWT, verificação das credenciais, inferência e registro das avaliações.
 - **Machine Learning:** modelo de Regressão Logística serializado em arquivo `.joblib`.
 - **MongoDB Atlas:** armazenamento dos usuários e das avaliações associadas à identidade autenticada.
@@ -47,7 +47,7 @@ A versão Flutter é executada localmente durante o desenvolvimento e pode ser a
 
 | Camada | Tecnologias |
 | --- | --- |
-| Interface | Flutter, Dart, Material Design |
+| Interface | Flutter, Dart, Material Design, `fl_chart` (gráfico de colunas) |
 | Comunicação | HTTPS, pacote `http` do Dart |
 | Backend | Python, FastAPI, Uvicorn, Pydantic, Pandas |
 | Machine Learning | Scikit-learn, Regressão Logística, Joblib |
@@ -112,12 +112,17 @@ stress_scan/
     │   ├── config/api_config.dart
     │   ├── services/
     │   │   ├── auth_service.dart
-    │   │   └── previsao_service.dart
+    │   │   ├── cadastro_service.dart
+    │   │   ├── previsao_service.dart
+    │   │   └── historico_service.dart
     │   ├── telas/
     │   │   ├── login_page.dart
+    │   │   ├── cadastro_page.dart
     │   │   ├── home_page.dart
     │   │   ├── questionario_page.dart
-    │   │   └── resultado_page.dart
+    │   │   ├── resultado_page.dart
+    │   │   ├── historico_page.dart
+    │   │   └── dashboard_page.dart
     │   └── main.dart
     └── pubspec.yaml
 ```
@@ -142,9 +147,9 @@ A aplicação Flutter utiliza esse endereço em `mobile/lib/config/api_config.da
 | `POST` | `/prever` | Classificação e registro da avaliação | Sim |
 | `GET` | `/historico` | Histórico individual do estudante | Sim |
 
-O endpoint `/prever` recebe as 17 respostas numéricas e retorna, entre outros campos, `avaliacao_id`, `nivel_estresse` e `classificacao`. O histórico é consultado utilizando o identificador obtido do JWT, não um identificador enviado pelo usuário na URL.
+O endpoint `/prever` recebe as 17 respostas numéricas e retorna, entre outros campos, `avaliacao_id`, `nivel_estresse` e `classificacao`. O `/historico` retorna até 50 avaliações mais recentes e usa o identificador obtido do JWT, não um identificador enviado pelo usuário na URL.
 
-As senhas são armazenadas com **hash Argon2**. O JWT é emitido no login; na implementação atual do Flutter, ele é mantido **em memória enquanto o aplicativo está em execução**, sem persistência de sessão entre reinicializações.
+As senhas são armazenadas com **hash Argon2**. O JWT é emitido no login; na implementação atual do Flutter, ele é mantido **em memória enquanto o aplicativo está em execução** e descartado ao sair da conta, sem persistência de sessão entre reinicializações.
 
 ## Infraestrutura Azure e CI/CD
 
@@ -211,7 +216,7 @@ flutter run -d chrome
 
 No Windows Desktop, a aplicação abre em uma janela independente. Como a API está disponível na Azure, **não é necessário iniciar a FastAPI no computador** para utilizar o aplicativo. É necessária conexão de rede com a API e o MongoDB Atlas deve estar acessível ao backend.
 
-> Ao executar o Flutter Web no navegador, pode ser necessária configuração de **CORS** no backend para autorizar a origem da aplicação.
+> A API habilita **CORS** apenas para origens `localhost` e `127.0.0.1` (qualquer porta), o que permite testar o Flutter Web em desenvolvimento.
 
 Para gerar uma versão de distribuição no Windows:
 
@@ -265,10 +270,12 @@ Swagger local: http://127.0.0.1:8000/docs
 | Home do estudante autenticado | Implementado e testado |
 | Questionário Flutter com 17 perguntas | Implementado e testado |
 | Envio do questionário e classificação via Azure | Implementado e testado |
-| Tela personalizada do resultado | Implementada e conectada; teste visual final pendente |
-| Tela Flutter de cadastro | Pendente |
-| Tela Flutter de histórico | Pendente |
-| Persistência segura de sessão e logout completo | Pendente |
+| Tela personalizada do resultado | Implementada e testada |
+| Tela Flutter de cadastro | Implementada; teste final com a Azure pendente |
+| Serviço e tela Flutter de histórico individual | Implementados e testados com a Azure |
+| Dashboard com gráfico `fl_chart` | Implementado; validação visual final pendente |
+| Logout com confirmação (descarta o token em memória) | Implementado |
+| Persistência segura de sessão entre reinicializações | Pendente |
 | Validação das respostas qualitativas com usuários reais | Pendente |
 
 ## Responsabilidade e privacidade
