@@ -163,8 +163,8 @@ O aplicativo é desenvolvido para execução local, com testes no **Windows Desk
 | Questionário | 17 perguntas distribuídas em cinco categorias | Implementada e testada |
 | Resultado | Exibe a classificação produzida pela API após o envio | Implementada e testada |
 | Meu histórico | Lista avaliações anteriores com data, hora e nível de estresse | Implementada e testada com a Azure |
-| Meus resultados | Dashboard com resumo e gráfico das últimas avaliações | Implementado e conectado; validação visual final pendente |
-| Criar conta | Formulário de cadastro (e-mail, senha e confirmação) integrado ao `POST /cadastro` | Implementada; teste final com a Azure pendente |
+| Meus resultados | Dashboard com resumo e gráfico das últimas avaliações | Implementado e testado com a Azure |
+| Criar conta | Formulário de cadastro (e-mail, senha e confirmação) integrado ao `POST /cadastro` | Implementada e testada com a Azure |
 
 ### Dashboard — Meus resultados
 
@@ -300,9 +300,9 @@ Swagger local: http://127.0.0.1:8000/docs
 | Envio do questionário e classificação via Azure | Implementado e testado |
 | Tela personalizada do resultado | Implementada e testada após a classificação |
 | Serviço e tela Flutter de histórico individual | Implementados e testados com a Azure |
-| Dashboard com gráfico `fl_chart` | Implementado e conectado à Home; validação visual final pendente |
-| Tela Flutter de cadastro | Implementada; teste final com a Azure pendente |
-| Logout com confirmação (descarta o token em memória) | Implementado |
+| Dashboard com gráfico `fl_chart` | Implementado e testado com a Azure |
+| Tela Flutter de cadastro | Implementada e testada com a Azure |
+| Logout com confirmação (descarta o token em memória) | Implementado e testado |
 | Persistência segura de sessão entre reinicializações | Pendente |
 | Validação das respostas qualitativas com usuários reais | Pendente |
 

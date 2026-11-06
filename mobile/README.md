@@ -271,10 +271,10 @@ Swagger local: http://127.0.0.1:8000/docs
 | Questionário Flutter com 17 perguntas | Implementado e testado |
 | Envio do questionário e classificação via Azure | Implementado e testado |
 | Tela personalizada do resultado | Implementada e testada |
-| Tela Flutter de cadastro | Implementada; teste final com a Azure pendente |
+| Tela Flutter de cadastro | Implementada e testada com a Azure |
 | Serviço e tela Flutter de histórico individual | Implementados e testados com a Azure |
-| Dashboard com gráfico `fl_chart` | Implementado; validação visual final pendente |
-| Logout com confirmação (descarta o token em memória) | Implementado |
+| Dashboard com gráfico `fl_chart` | Implementado e testado com a Azure |
+| Logout com confirmação (descarta o token em memória) | Implementado e testado |
 | Persistência segura de sessão entre reinicializações | Pendente |
 | Validação das respostas qualitativas com usuários reais | Pendente |
 
