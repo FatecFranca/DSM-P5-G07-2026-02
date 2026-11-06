@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'telas/cadastro_page.dart';
 import 'telas/login_page.dart';
 
 void main() {
@@ -121,9 +122,7 @@ class TelaBoasVindas extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  const TelaProvisoria(
-                                    titulo: 'Criar conta',
-                                  ),
+                                  const CadastroPage(),
                             ),
                           );
                         },
@@ -149,32 +148,6 @@ class TelaBoasVindas extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// Tela temporária para testar a navegação.
-class TelaProvisoria extends StatelessWidget {
-  final String titulo;
-
-  const TelaProvisoria({
-    super.key,
-    required this.titulo,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(titulo),
-      ),
-      body: Center(
-        child: Text(
-          'Tela de $titulo - próxima etapa',
-          style: const TextStyle(fontSize: 18),
-          textAlign: TextAlign.center,
         ),
       ),
     );
