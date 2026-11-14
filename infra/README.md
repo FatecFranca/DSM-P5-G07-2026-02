@@ -53,6 +53,8 @@ Testar renovação do certificado:
   do Flutter (análise estática e testes).
 - Publicação contínua na VM a partir da main.
 - Aplicativo Flutter integrado à API por HTTPS.
+- Limitação de taxa de requisições em /login e /cadastro via Nginx (proteção contra força bruta).
+- Endpoint de monitoramento /health na API FastAPI com verificação do MongoDB e do modelo.
 
 ## Verificações realizadas
 
@@ -66,7 +68,6 @@ Esses testes verificam a integração técnica, não a qualidade do modelo.
 
 - Definir e implementar a estratégia de escala automática.
 - Implementar rollback automático do deploy.
-- Limitar a taxa de requisições em /login e /cadastro (Nginx).
 - Configurar monitoramento e alertas.
 
 ## Publicação automática

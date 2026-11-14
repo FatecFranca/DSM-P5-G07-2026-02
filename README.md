@@ -310,6 +310,8 @@ Swagger local: http://127.0.0.1:8000/docs
 | Tela Flutter de cadastro | Implementada e testada com a Azure |
 | Logout com confirmação (descarta o token em memória) | Implementado e testado |
 | Tratamento de expiração do JWT (volta ao login ao receber 401) | Implementado |
+| Endpoint de monitoramento /health na API | Implementado e testado |
+| Proteção contra força bruta (Rate Limiting) no Nginx | Configurado para /login e /cadastro |
 | Testes automatizados dos serviços Flutter (erros HTTP, rede, timeout, 401) | 22 testes (`flutter test`) |
 | Verificações de autenticação na API de produção (sem token, token forjado, `alg=none`, CORS externo) | Executadas manualmente; resultado esperado (401/400) |
 | Persistência segura de sessão entre reinicializações | Pendente |
