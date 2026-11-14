@@ -255,3 +255,15 @@ def test_cors_permite_localhost_e_bloqueia_origem_externa(client):
 
     ruim = client.options("/login", headers={**base, "Origin": "https://evil.com"})
     assert "access-control-allow-origin" not in ruim.headers
+
+
+def test_health_check_retorna_status_e_componentes(client):
+    r = client.get("/health")
+    assert r.status_code == 200
+    dados = r.json()
+    assert "status" in dados
+    assert "timestamp" in dados
+    assert "database" in dados
+    assert dados["modelo"] == "carregado"
+    assert dados["versao"] == "1.0.0"
+

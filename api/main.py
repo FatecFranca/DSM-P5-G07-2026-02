@@ -88,6 +88,26 @@ def verificar_modelo():
     }
 
 
+# Monitoramento e integridade dos serviços
+@app.get("/health")
+def health_check():
+    db_status = "conectado"
+    try:
+        db.command("ping")
+    except Exception as e:
+        db_status = f"erro: {str(e)}"
+
+    model_status = "carregado" if modelo is not None and len(colunas) == 17 else "indisponivel"
+
+    return {
+        "status": "ok" if db_status == "conectado" and model_status == "carregado" else "degradado",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "database": db_status,
+        "modelo": model_status,
+        "versao": "1.0.0"
+    }
+
+
 # Realizar classificação e salvar avaliação
 @app.post("/prever")
 def prever(
