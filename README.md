@@ -4,6 +4,13 @@
 
 Projeto Integrador do curso de **Desenvolvimento de Software Multiplataforma (DSM)** da **FATEC Franca**.
 
+**Alunos**
+
+Monica Aímola Falqueto - RM 1091392223023
+Nathan Bizinoto de Oliveira - RM 1091392323023
+Vinicius Rodrigues Oliveira - RM 1091392323015
+Arthur Rodrigues Ferreira - RM 1091392323014
+
 O **Stress Scan** combina um aplicativo desenvolvido em **Flutter**, uma **API REST em FastAPI** hospedada em uma **máquina virtual (VM) na Microsoft Azure**, um modelo de **Machine Learning** e o **MongoDB Atlas** para classificar respostas a um questionário, consultar avaliações anteriores e visualizar um painel com a evolução das classificações.
 
 > **Aviso:** o Stress Scan é um protótipo acadêmico. Suas classificações são experimentais, **não constituem diagnóstico clínico** e não substituem avaliação ou acompanhamento profissional.
