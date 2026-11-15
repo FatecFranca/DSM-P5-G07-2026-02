@@ -15,6 +15,11 @@ O **Stress Scan** combina um aplicativo desenvolvido em **Flutter**, uma **API R
 
 > **Aviso:** o Stress Scan é um protótipo acadêmico. Suas classificações são experimentais, **não constituem diagnóstico clínico** e não substituem avaliação ou acompanhamento profissional.
 
+```text
+Link para o video-pitch demonstrativo do nosso projeto:
+https://youtu.be/kBjRLJFC3Wo
+```
+
 ## Objetivo e contexto
 
 O projeto busca apoiar a reflexão sobre o estresse no ambiente universitário, com atenção especial à vivência de estudantes **pretos e pardos** e aos fatores sociais e acadêmicos que podem afetar seu bem-estar.
